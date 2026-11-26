@@ -99,7 +99,10 @@ class _TracerouteScreenState extends State<TracerouteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = toolById('trace')?.accent ?? AppAccents.violet;
+    final accent = adaptiveAccent(
+      context,
+      toolById('trace')?.accent ?? AppAccents.violet,
+    );
     return FrostedPage(
       title: context.tr('Traceroute', '路由追蹤'),
       subtitle: context.tr('Hop-by-hop network path', '逐跳網路路徑'),

@@ -243,7 +243,7 @@ class _ConnectionHero extends StatelessWidget {
     final p = context.palette;
     final info = viewModel.connection;
     final public = viewModel.publicInfo;
-    final accent = AppAccents.blue;
+    final accent = adaptiveAccent(context, AppAccents.blue);
     final localIp = info?.localIpv4;
     final prefix = info?.prefixLength;
     final isVpn = info?.isVpn == true;
@@ -302,7 +302,11 @@ class _ConnectionHero extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 7),
-                        if (isVpn) Pill('VPN', color: AppAccents.violet),
+                        if (isVpn)
+                          Pill(
+                            'VPN',
+                            color: adaptiveAccent(context, AppAccents.violet),
+                          ),
                       ],
                     ),
                     if (wifiName != null && wifiName.isNotEmpty)
@@ -506,7 +510,7 @@ class _UpdateBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final accent = AppAccents.green;
+    final accent = adaptiveAccent(context, AppAccents.green);
     return SpringyTap(
       onTap: onTap,
       child: Container(
@@ -603,10 +607,12 @@ class _ToolCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final scale = MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.6);
+    final cardHeight = 112.0 * (1 + (scale - 1) * 0.9);
     return SpringyTap(
       onTap: onTap,
       child: Container(
-        height: 112,
+        height: cardHeight,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: p.card,
@@ -625,13 +631,21 @@ class _ToolCard extends StatelessWidget {
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: tool.accent.withValues(alpha: 0.15),
+                    color: adaptiveAccent(
+                      context,
+                      tool.accent,
+                    ).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(11),
                   ),
-                  child: Icon(tool.icon, size: 18, color: tool.accent),
+                  child: Icon(
+                    tool.icon,
+                    size: 18,
+                    color: adaptiveAccent(context, tool.accent),
+                  ),
                 ),
                 const Spacer(),
-                if (tool.tag != null) Pill(tool.tag!, color: tool.accent),
+                if (tool.tag != null)
+                  Pill(tool.tag!, color: adaptiveAccent(context, tool.accent)),
               ],
             ),
             const Spacer(),

@@ -35,7 +35,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = AppAccents.blue;
+    final accent = adaptiveAccent(context, AppAccents.blue);
     return AnimatedBuilder(
       animation: _viewModel,
       builder: (context, _) {
@@ -508,7 +508,10 @@ class _HeroCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 7),
                         if (connection?.isVpn == true)
-                          Pill('VPN', color: AppAccents.violet),
+                          Pill(
+                            'VPN',
+                            color: adaptiveAccent(context, AppAccents.violet),
+                          ),
                       ],
                     ),
                   ],

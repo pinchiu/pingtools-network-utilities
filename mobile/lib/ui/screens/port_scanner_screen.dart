@@ -81,7 +81,10 @@ class _PortScannerScreenState extends State<PortScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = toolById('ports')?.accent ?? AppAccents.amber;
+    final accent = adaptiveAccent(
+      context,
+      toolById('ports')?.accent ?? AppAccents.amber,
+    );
     return FrostedPage(
       title: context.tr('Port Scanner', '連接埠掃描'),
       subtitle: context.tr('TCP ports & service banners', 'TCP 連接埠與服務橫幅'),

@@ -25,7 +25,8 @@ class ToolInfo {
   });
 
   String title(BuildContext context) => context.isZh ? titleZh : titleEn;
-  String subtitle(BuildContext context) => context.isZh ? subtitleZh : subtitleEn;
+  String subtitle(BuildContext context) =>
+      context.isZh ? subtitleZh : subtitleEn;
 }
 
 const List<ToolInfo> tools = [

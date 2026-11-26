@@ -106,3 +106,9 @@ CupertinoThemeData buildAppTheme(Brightness brightness) {
     ),
   );
 }
+
+/// Accents used as text/icons need a darker variant on light backgrounds.
+Color adaptiveAccent(BuildContext context, Color accent) {
+  if (CupertinoTheme.brightnessOf(context) == Brightness.dark) return accent;
+  return Color.lerp(accent, const Color(0xFF07121F), 0.55)!;
+}

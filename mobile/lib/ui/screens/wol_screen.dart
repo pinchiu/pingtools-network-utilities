@@ -50,7 +50,10 @@ class _WolScreenState extends State<WolScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = toolById('wol')?.accent ?? AppAccents.rose;
+    final accent = adaptiveAccent(
+      context,
+      toolById('wol')?.accent ?? AppAccents.rose,
+    );
     return AnimatedBuilder(
       animation: _viewModel,
       builder: (context, _) {
@@ -198,10 +201,18 @@ class _WolScreenState extends State<WolScreen> {
                             ],
                           ),
                         ),
-                        CupertinoSwitch(
-                          value: _viewModel.saveDevice,
-                          activeTrackColor: accent,
-                          onChanged: _viewModel.setSaveDevice,
+                        Semantics(
+                          label: context.tr('Save this device', '儲存到我的裝置'),
+                          child: SizedBox(
+                            height: 44,
+                            child: Center(
+                              child: CupertinoSwitch(
+                                value: _viewModel.saveDevice,
+                                activeTrackColor: accent,
+                                onChanged: _viewModel.setSaveDevice,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -503,14 +514,30 @@ class _DeviceCard extends StatelessWidget {
                   color: accent.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(CupertinoIcons.power, size: 17, color: accent),
+                child: Icon(
+                  CupertinoIcons.power,
+                  size: 17,
+                  color: accent,
+                  semanticLabel: context.tr(
+                    'Wake ${device.name}',
+                    '喚醒 ${device.name}',
+                  ),
+                ),
               ),
             ),
           CupertinoButton(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             minimumSize: Size.zero,
             onPressed: busy ? null : onDelete,
-            child: Icon(CupertinoIcons.trash, size: 18, color: p.danger),
+            child: Icon(
+              CupertinoIcons.trash,
+              size: 18,
+              color: p.danger,
+              semanticLabel: context.tr(
+                'Delete ${device.name}',
+                '刪除 ${device.name}',
+              ),
+            ),
           ),
         ],
       ),

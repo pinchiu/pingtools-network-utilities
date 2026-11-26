@@ -78,7 +78,10 @@ class _GeoPingScreenState extends State<GeoPingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = toolById('geo')?.accent ?? AppAccents.blue;
+    final accent = adaptiveAccent(
+      context,
+      toolById('geo')?.accent ?? AppAccents.blue,
+    );
     return FrostedPage(
       title: context.tr('Geo Ping', '地理 Ping'),
       subtitle: context.tr('Target location & latency', '目標位置與延遲'),

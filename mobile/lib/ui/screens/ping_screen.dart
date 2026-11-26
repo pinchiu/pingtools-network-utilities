@@ -64,7 +64,10 @@ class _PingScreenState extends State<PingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = toolById('ping')?.accent ?? AppAccents.cyan;
+    final accent = adaptiveAccent(
+      context,
+      toolById('ping')?.accent ?? AppAccents.cyan,
+    );
     return FrostedPage(
       title: context.tr('Ping', 'Ping 測試'),
       subtitle: context.tr('ICMP latency, loss & jitter', 'ICMP 延遲、封包遺失與抖動'),
@@ -120,9 +123,17 @@ class _PingScreenState extends State<PingScreen> {
                       ],
                     ),
                   ),
-                  CupertinoSwitch(
-                    value: vm.continuous,
-                    onChanged: vm.running ? null : vm.setContinuous,
+                  Semantics(
+                    label: context.tr('Continuous ping', '連續 Ping'),
+                    child: SizedBox(
+                      height: 44,
+                      child: Center(
+                        child: CupertinoSwitch(
+                          value: vm.continuous,
+                          onChanged: vm.running ? null : vm.setContinuous,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

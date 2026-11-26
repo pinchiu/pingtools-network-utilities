@@ -9,6 +9,7 @@ import '../../core/net/whois_engine.dart';
 import '../../core/util/format.dart';
 import '../localization.dart';
 import '../tool_registry.dart';
+import '../theme.dart';
 import '../widgets.dart';
 
 const String _historyKey = 'whois';
@@ -280,7 +281,7 @@ class _WhoisScreenState extends State<WhoisScreen> {
   bool _rawExpanded = false;
   bool _showAllFields = false;
 
-  Color get _accent => toolById('whois')!.accent;
+  Color get _accent => adaptiveAccent(context, toolById('whois')!.accent);
 
   @override
   void dispose() {
@@ -416,6 +417,10 @@ class _WhoisScreenState extends State<WhoisScreen> {
                           CupertinoIcons.arrow_right_circle_fill,
                           size: 22,
                           color: _accent,
+                          semanticLabel: context.tr(
+                            'Look up WHOIS',
+                            '查詢 WHOIS',
+                          ),
                         ),
                       ),
                     ),
@@ -578,6 +583,10 @@ class _WhoisScreenState extends State<WhoisScreen> {
                                 CupertinoIcons.doc_on_doc,
                                 size: 18,
                                 color: p.muted,
+                                semanticLabel: context.tr(
+                                  'Copy raw WHOIS',
+                                  '複製原始 WHOIS',
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -591,6 +600,9 @@ class _WhoisScreenState extends State<WhoisScreen> {
                                     : CupertinoIcons.chevron_down,
                                 size: 16,
                                 color: p.muted,
+                                semanticLabel: _rawExpanded
+                                    ? context.tr('Hide raw response', '收起源始回應')
+                                    : context.tr('Show raw response', '顯示原始回應'),
                               ),
                             ),
                           ],

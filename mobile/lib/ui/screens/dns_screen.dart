@@ -9,6 +9,7 @@ import '../../core/net/dns_engine.dart';
 import '../../core/util/format.dart';
 import '../localization.dart';
 import '../tool_registry.dart';
+import '../theme.dart';
 import '../widgets.dart';
 
 const String _historyKey = 'dns';
@@ -172,7 +173,7 @@ class _DnsScreenState extends State<DnsScreen> {
   Timer? _copiedTimer;
   bool _copied = false;
 
-  Color get _accent => toolById('dns')!.accent;
+  Color get _accent => adaptiveAccent(context, toolById('dns')!.accent);
 
   @override
   void dispose() {
@@ -397,6 +398,7 @@ class _DnsScreenState extends State<DnsScreen> {
                           CupertinoIcons.arrow_right_circle_fill,
                           size: 22,
                           color: _accent,
+                          semanticLabel: context.tr('Search DNS', '查詢 DNS'),
                         ),
                       ),
                     ),
@@ -516,6 +518,10 @@ class _DnsScreenState extends State<DnsScreen> {
                             CupertinoIcons.doc_on_doc,
                             size: 18,
                             color: p.muted,
+                            semanticLabel: context.tr(
+                              'Copy DNS records',
+                              '複製 DNS 紀錄',
+                            ),
                           ),
                         ),
                       ],

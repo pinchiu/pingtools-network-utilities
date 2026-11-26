@@ -30,7 +30,10 @@ class FrostedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     final top = MediaQuery.paddingOf(context).top;
-    final barHeight = 56.0 + top;
+    final textScale = MediaQuery.textScalerOf(context)
+        .scale(1.0)
+        .clamp(1.0, 2.0);
+    final barHeight = 56.0 * textScale + top;
     final overlay =
         (p.isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
             .copyWith(
@@ -331,28 +334,31 @@ class AppField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        CupertinoTextField(
-          controller: controller,
-          enabled: enabled,
-          placeholder: placeholder,
-          onChanged: onChanged,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          textInputAction: textInputAction ?? TextInputAction.done,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-          style: TextStyle(
-            color: p.text,
-            fontSize: 15,
-            fontFamily: monospace ? 'monospace' : null,
-          ),
-          placeholderStyle: TextStyle(color: p.muted, fontSize: 15),
-          cursorColor: p.primary,
-          prefix: prefix,
-          suffix: suffix,
-          decoration: BoxDecoration(
-            color: p.card,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: p.border, width: 0.8),
+        Semantics(
+          label: label,
+          child: CupertinoTextField(
+            controller: controller,
+            enabled: enabled,
+            placeholder: placeholder,
+            onChanged: onChanged,
+            keyboardType: keyboardType,
+            maxLines: maxLines,
+            textInputAction: textInputAction ?? TextInputAction.done,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            style: TextStyle(
+              color: p.text,
+              fontSize: 15,
+              fontFamily: monospace ? 'monospace' : null,
+            ),
+            placeholderStyle: TextStyle(color: p.muted, fontSize: 15),
+            cursorColor: p.primary,
+            prefix: prefix,
+            suffix: suffix,
+            decoration: BoxDecoration(
+              color: p.card,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: p.border, width: 0.8),
+            ),
           ),
         ),
       ],

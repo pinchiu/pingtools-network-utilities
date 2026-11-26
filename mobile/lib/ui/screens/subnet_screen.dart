@@ -9,6 +9,7 @@ import '../../core/net/subnet_scanner.dart';
 import '../../core/util/format.dart';
 import '../localization.dart';
 import '../tool_registry.dart';
+import '../theme.dart';
 import '../widgets.dart';
 
 const String _historyKey = 'subnet';
@@ -308,7 +309,7 @@ class _SubnetScreenState extends State<SubnetScreen> {
   Timer? _copiedTimer;
   bool _copied = false;
 
-  Color get _accent => toolById('subnet')!.accent;
+  Color get _accent => adaptiveAccent(context, toolById('subnet')!.accent);
 
   @override
   void initState() {
@@ -538,6 +539,10 @@ class _SubnetScreenState extends State<SubnetScreen> {
                           CupertinoIcons.location,
                           size: 20,
                           color: _accent,
+                          semanticLabel: context.tr(
+                            'Detect local subnet',
+                            '偵測區域子網路',
+                          ),
                         ),
                       ),
                     ),
@@ -601,12 +606,20 @@ class _SubnetScreenState extends State<SubnetScreen> {
                             ],
                           ),
                         ),
-                        CupertinoSwitch(
-                          value: _vm.includePortProbe,
-                          onChanged: _vm.scanning
-                              ? null
-                              : (value) => _vm.setPortProbe(value),
-                          activeTrackColor: _accent,
+                        Semantics(
+                          label: context.tr('Probe common ports', '探測常用連接埠'),
+                          child: SizedBox(
+                            height: 44,
+                            child: Center(
+                              child: CupertinoSwitch(
+                                value: _vm.includePortProbe,
+                                onChanged: _vm.scanning
+                                    ? null
+                                    : (value) => _vm.setPortProbe(value),
+                                activeTrackColor: _accent,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -709,6 +722,10 @@ class _SubnetScreenState extends State<SubnetScreen> {
                                 CupertinoIcons.doc_on_doc,
                                 size: 18,
                                 color: p.muted,
+                                semanticLabel: context.tr(
+                                  'Copy host list',
+                                  '複製主機清單',
+                                ),
                               ),
                             ),
                           ],

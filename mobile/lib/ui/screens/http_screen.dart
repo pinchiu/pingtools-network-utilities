@@ -54,7 +54,10 @@ class _HttpScreenState extends State<HttpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = toolById('http')?.accent ?? AppAccents.amber;
+    final accent = adaptiveAccent(
+      context,
+      toolById('http')?.accent ?? AppAccents.amber,
+    );
     return AnimatedBuilder(
       animation: _viewModel,
       builder: (context, _) {
@@ -105,10 +108,18 @@ class _HttpScreenState extends State<HttpScreen> {
                             ],
                           ),
                         ),
-                        CupertinoSwitch(
-                          value: _viewModel.followRedirects,
-                          activeTrackColor: accent,
-                          onChanged: _viewModel.setFollowRedirects,
+                        Semantics(
+                          label: context.tr('Follow redirects', '跟隨重新導向'),
+                          child: SizedBox(
+                            height: 44,
+                            child: Center(
+                              child: CupertinoSwitch(
+                                value: _viewModel.followRedirects,
+                                activeTrackColor: accent,
+                                onChanged: _viewModel.setFollowRedirects,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -620,7 +631,12 @@ class _HeaderRow extends StatelessWidget {
                 // Clipboard access can be unavailable on some platforms.
               }
             },
-            child: Icon(CupertinoIcons.doc_on_doc, size: 14, color: p.muted),
+            child: Icon(
+              CupertinoIcons.doc_on_doc,
+              size: 14,
+              color: p.muted,
+              semanticLabel: context.tr('Copy header value', '複製標頭值'),
+            ),
           ),
         ],
       ),
