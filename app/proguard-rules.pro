@@ -1,0 +1,3 @@
+-dontwarn org.slf4j.**
+-dontwarn dnsjava.**
+-keep class dnsjava.** { *; }
