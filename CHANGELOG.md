@@ -4,32 +4,45 @@ All notable changes to PingTools are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] — 2026-11-26
+
+### Changed
+
+- **Rewritten in Flutter with a pure Cupertino architecture** (`mobile/`).
+  The v1 Jetpack Compose implementation remains in the repository root.
+- Same package id (`com.pinchiu.pingtools`) and signing key, so 2.0.0 installs
+  as an in-place upgrade over 1.0.0.
+- New responsive layout capped at 860 dp, adaptive 2/3/4-column tool grid.
+
+### Added
+
+- **iOS physics** — `SpringSimulation` (mass 1, stiffness 520, damping 30)
+  drives press/release scaling on buttons and tool cards; native
+  `CupertinoPageRoute` transitions throughout.
+- **Frosted-glass navigation** — real `BackdropFilter` blur with a translucent
+  bar, hairline border and content scrolling underneath.
+- **English / 繁體中文 switch** — instant, persisted, applied to tool screens
+  and Cupertino system controls.
+- **In-app updates** — checks GitHub Releases, compares versions, downloads the
+  APK with progress, verifies the attached SHA-256, launches the Android
+  installer through a FileProvider, and guides the user through the
+  “install unknown apps” permission when needed.
+- Light / dark / system appearance with a custom network palette.
+- Native bridge for connection details, Wi-Fi permissions, Maps/GitHub links,
+  app version and APK installation.
+- Unit tests for formatting, subnet math, version comparison, DNS wire parsing
+  and Wake-on-LAN packets; Flutter CI workflow.
+
+### Kept
+
+- Ping, Geo Ping, Traceroute, Port Scanner, DNS Lookup, WHOIS, Subnet Scanner,
+  Wake-on-LAN, Connection Info and HTTP Inspector, with recent-input history and
+  saved Wake-on-LAN devices stored on-device.
+
 ## [1.0.0] — 2026-11-26
 
 ### Added
 
-- **Ping** — ICMP echo with live RTT sparkline, loss, jitter, standard deviation
-  and a TCP-connect fallback for devices that block raw ICMP.
-- **Geo Ping** — resolves a host, measures latency and shows city-level
-  geolocation, ISP/ASN, coordinates and an “Open in Maps” link.
-- **Traceroute** — hop-by-hop ICMP TTL discovery with three probes per hop and
-  best-effort reverse DNS.
-- **Port Scanner** — concurrent TCP connect scan, presets, service names and
-  banner grabbing.
-- **DNS Lookup** — A, AAAA, CNAME, MX, NS, TXT, SOA, SRV, CAA and PTR queries
-  against system, Cloudflare, Google, Quad9, OpenDNS or AdGuard resolvers.
-- **WHOIS** — port-43 client with TLD bootstrap, IANA referrals, parsed key
-  fields and the full raw record.
-- **Subnet Scanner** — auto-detects the local subnet, scans any CIDR/range for
-  live hosts, reverse-DNS names, gateway flagging and optional common-port probes.
-- **Wake-on-LAN** — magic-packet sender with saved devices, custom broadcast,
-  port and optional SecureOn password.
-- **Connection Info** — local IPv4/IPv6, gateway, DNS, Wi-Fi details and public
-  IP with ISP/ASN/geolocation.
-- **HTTP Inspector** — status, redirects, timing, protocol, TLS details, headers
-  and security-header checks.
-- Dark/light Material 3 design with a custom network-blue palette, recent-target
-  history and a small on-device store for saved Wake-on-LAN devices.
-- GitHub Actions CI that builds the debug APK and runs unit tests.
-
-[1.0.0]: https://github.com/pinchiu/pingtools-network-utilities/releases/tag/v1.0.0
+- Native Android (Kotlin + Jetpack Compose) release of the toolkit with ten
+  network tools, Material 3 light/dark themes, streaming results, local history,
+  saved Wake-on-LAN devices and CI.
