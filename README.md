@@ -1,120 +1,149 @@
 # PingTools — Network Utilities
 
-A clean, fast, ad-free network toolbox for Android. Ten on-device tools, no account, no analytics, no backend.
-
-**Download:** grab the signed APK from the [latest release](https://github.com/pinchiu/pingtools-network-utilities/releases/latest) (Android 7.0+).
+A pure **Cupertino Flutter** network toolkit for Android, rebuilt from the native v1 app. Ten on-device tools, English / 繁體中文, real frosted-glass navigation, iOS spring physics and in-app APK updates — no account, no ads, no analytics, no backend.
 
 <p align="center">
-  <img src="docs/app-icon.png" width="112" alt="PingTools icon" />
+  <img src="docs/app-icon.png" width="120" alt="PingTools app icon" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/pinchiu/pingtools-network-utilities/actions/workflows/android.yml"><img alt="CI" src="https://github.com/pinchiu/pingtools-network-utilities/actions/workflows/android.yml/badge.svg" /></a>
+  <a href="https://github.com/pinchiu/pingtools-network-utilities/actions/workflows/flutter.yml"><img alt="Flutter CI" src="https://github.com/pinchiu/pingtools-network-utilities/actions/workflows/flutter.yml/badge.svg" /></a>
+  <a href="https://github.com/pinchiu/pingtools-network-utilities/actions/workflows/android.yml"><img alt="Native CI" src="https://github.com/pinchiu/pingtools-network-utilities/actions/workflows/android.yml/badge.svg" /></a>
   <a href="https://github.com/pinchiu/pingtools-network-utilities/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/pinchiu/pingtools-network-utilities" /></a>
-  <img alt="minSdk 24" src="https://img.shields.io/badge/minSdk-24-3DDC84" />
-  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.0-7F52FF" />
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.50-02569B?logo=flutter" />
+  <img alt="minSdk 24" src="https://img.shields.io/badge/minSdk-24-3DDC84?logo=android" />
   <img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-blue" />
 </p>
+
+<p align="center">
+  <b><a href="https://github.com/pinchiu/pingtools-network-utilities/releases/latest">Download the latest signed APK</a></b> · Android 7.0+
+</p>
+
+## Highlights
+
+- **Pure Cupertino** — no Material widgets. `CupertinoApp`, `CupertinoPageScaffold`, Cupertino pickers, sheets, switches and native page transitions.
+- **Frosted-glass navigation** — a real `BackdropFilter` (26 px blur) with a translucent bar and hairline, content scrolling underneath.
+- **iOS spring physics** — `SpringSimulation` (mass 1, stiffness 520, damping 30) drives press and release on cards and buttons.
+- **In-app updates** — checks GitHub Releases, streams the APK with a progress bar, verifies the published SHA-256, then hands off to the Android installer through a `FileProvider`. No silent installs.
+- **English / 繁體中文** — switch instantly in Settings; the choice is persisted and applies to tool screens and Cupertino system controls.
+- **Ten tools** — ping, geo ping, traceroute, port scanner, DNS, WHOIS, subnet discovery, Wake-on-LAN, connection info and HTTP inspection.
+- **Same identity** — package `com.pinchiu.pingtools` and the v1 signing key, so 2.0.0 installs as an in-place upgrade.
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/flutter/01-home-en.png" width="240" alt="English dashboard" />
+  <img src="docs/screenshots/flutter/02-home-zh.png" width="240" alt="繁體中文儀表板" />
+  <img src="docs/screenshots/flutter/03-home-light-zh.png" width="240" alt="Light theme" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/flutter/04-ping-zh.png" width="240" alt="Ping with spring chart" />
+  <img src="docs/screenshots/flutter/05-geo-ping-zh.png" width="240" alt="Geo Ping" />
+  <img src="docs/screenshots/flutter/06-port-scanner-zh.png" width="240" alt="Port scanner with banners" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/flutter/07-dns-zh.png" width="240" alt="DNS lookup" />
+  <img src="docs/screenshots/flutter/08-whois-zh.png" width="240" alt="WHOIS summary" />
+  <img src="docs/screenshots/flutter/09-subnet-zh.png" width="240" alt="Subnet scanner" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/flutter/10-connection-zh.png" width="240" alt="Connection info" />
+  <img src="docs/screenshots/flutter/11-http-zh.png" width="240" alt="HTTP inspector" />
+  <img src="docs/screenshots/flutter/12-wol-zh.png" width="240" alt="Wake-on-LAN" />
+</p>
+
+<sub>Android 15 emulator. Public IP, ISP and location fields are replaced with documentation values.</sub>
 
 ## Tools
 
 | Tool | What it does |
 | --- | --- |
-| **Ping** | Continuous or counted ICMP echo with live RTT chart, loss, jitter and standard deviation. Falls back to TCP-connect timing when Android blocks raw ICMP for apps. |
-| **Geo Ping** | Resolves a host, measures latency and shows city-level geolocation, ISP/ASN and coordinates, with an “Open in Maps” link. |
-| **Traceroute** | Hop-by-hop path discovery via ICMP TTL expiry, three probes per hop, reverse DNS for public hops. |
-| **Port Scanner** | Concurrent TCP connect scan over custom ranges or presets, with service names and banner grabbing. |
-| **DNS Lookup** | A, AAAA, CNAME, MX, NS, TXT, SOA, SRV, CAA and PTR queries against system, Cloudflare, Google, Quad9 or OpenDNS resolvers. |
-| **WHOIS** | Port-43 WHOIS with IANA referral following, parsed key fields plus the full raw record. |
-| **Subnet Scanner** | Auto-detects your subnet; scans any CIDR/range for live hosts, hostnames, MAC addresses and optionally common open ports. |
-| **Wake-on-LAN** | Magic-packet sender with saved devices, custom broadcast address, port and optional SecureOn password. |
-| **Connection Info** | Connection type, local IPv4/IPv6, gateway, DNS servers, Wi-Fi SSID/RSSI/link speed and public IP with ISP/ASN/geo. |
-| **HTTP Inspector** | Status, redirect target, timing, protocol, TLS version/cipher, response headers and basic security checks. |
+| **Ping** | Continuous or counted ICMP echo, live RTT sparkline, loss, jitter and standard deviation. Falls back to TCP-connect timing when Android blocks raw ICMP. |
+| **Geo Ping** | Resolves a host, measures latency and shows city-level geolocation, ISP/ASN, coordinates and an “Open in Maps” link. |
+| **Traceroute** | Hop-by-hop ICMP TTL discovery, three probes per hop. |
+| **Port Scanner** | Concurrent TCP connect scan with presets, service names and banner grabbing. |
+| **DNS Lookup** | A, AAAA, CNAME, MX, NS, TXT, SOA, SRV, CAA and PTR queries against the system resolver, Cloudflare, Google, Quad9, OpenDNS or AdGuard. |
+| **WHOIS** | Port-43 client with TLD bootstrap, IANA referrals, highlighted registration fields and the raw record. |
+| **Subnet Scanner** | Auto-detects the local subnet; scans any CIDR/range for live hosts, optionally probing common ports. |
+| **Wake-on-LAN** | Saved devices, custom broadcast/port and optional SecureOn password. |
+| **Connection Info** | Local IPv4/IPv6, prefix, gateway, DNS, Wi-Fi details and public IP with ISP/ASN/geo. |
+| **HTTP Inspector** | Status, redirects, timing, protocol, TLS certificate, security headers and all response headers. |
 
-## Screenshots
+## In-app update flow
 
-<p align="center">
-  <img src="docs/screenshots/01-home.png" width="230" alt="Home dashboard" />
-  <img src="docs/screenshots/02-ping.png" width="230" alt="Ping with live latency chart" />
-  <img src="docs/screenshots/03-geo-ping.png" width="230" alt="Geo Ping target location" />
-</p>
-<p align="center">
-  <img src="docs/screenshots/04-port-scanner.png" width="230" alt="Port scanner results" />
-  <img src="docs/screenshots/05-dns.png" width="230" alt="DNS lookup" />
-  <img src="docs/screenshots/06-whois.png" width="230" alt="WHOIS registration summary" />
-</p>
-<p align="center">
-  <img src="docs/screenshots/07-subnet.png" width="230" alt="Subnet scanner with live hosts" />
-  <img src="docs/screenshots/08-connection.png" width="230" alt="Connection and public IP details" />
-  <img src="docs/screenshots/09-http.png" width="230" alt="HTTP inspector" />
-</p>
-<p align="center">
-  <img src="docs/screenshots/10-wol.png" width="230" alt="Wake-on-LAN saved devices" />
-  <img src="docs/screenshots/11-about.png" width="230" alt="About and appearance settings" />
-</p>
+1. The dashboard silently checks `api.github.com/repos/.../releases/latest`; Settings has a manual **Check now**.
+2. A newer semantic version exposes the APK asset and release notes.
+3. **Download & install** streams the APK to app-private storage and shows progress.
+4. If a `.sha256` asset is published, the download is verified with `crypto` before installation.
+5. `FileProvider` + `Intent.ACTION_VIEW` opens the Android package installer. On Android 8+ the app first offers to open the “install unknown apps” settings when needed.
 
-<sub>Screenshots from an Android 15 emulator. Public IP, ISP and location fields have been replaced with documentation values; other addresses are local emulator/host values.</sub>
+The updater never installs silently and never downloads without a tap.
 
-## Design
-
-- **Kotlin + Jetpack Compose + Material 3**, dark and light themes with a custom network-blue palette.
-- **Single activity, single module**, feature-first packages under `ui/screens`, pure engines under `core/net`.
-- **Streaming results** via Kotlin `Flow` — ping replies, traceroute hops and port scan progress render as they arrive.
-- **No background services**, no wake locks, no ads, no third-party analytics. History is a small local `SharedPreferences` store.
-- **Graceful degradation**: ICMP → TCP fallback, cleartext/TLS checks, permission-aware Wi-Fi details, explicit error states everywhere.
+## Project layout
 
 ```
-app/src/main/java/com/pinchiu/pingtools/
-├── core/
-│   ├── data/HistoryStore.kt        # recent inputs + saved WoL devices
-│   ├── model/Models.kt             # shared events, configs, results
-│   ├── net/                        # PingEngine, TracerouteEngine, PortScanner,
-│   │                               # SubnetScanner, WolEngine, DnsEngine,
-│   │                               # WhoisEngine, IpInfoEngine, HttpEngine
-│   └── util/                       # process runner, parsing and formatting
-├── ui/
-│   ├── components/Components.kt    # shared Compose building blocks
-│   ├── screens/                    # one file per tool + Home/About
-│   ├── theme/                      # color, type, theme store
-│   ├── AppNav.kt                   # navigation graph
-│   └── ToolRegistry.kt             # tool metadata
-└── MainActivity.kt
+mobile/                     Flutter Cupertino app (v2, active)
+├── lib/core/               models, settings, native bridge, network engines
+├── lib/ui/                 Cupertino theme, widgets, screens
+├── android/                Kotlin host: Wi-Fi info, permissions, APK installer
+└── test/                   49 unit/widget tests
+
+app/                        Native Kotlin + Jetpack Compose app (v1, preserved)
+docs/                       architecture, screenshots, branding SVG
+.github/workflows/          Flutter CI + native CI
+```
+
+## Build
+
+### Flutter (v2)
+
+Requires Flutter 3.50+ and Android SDK 36.
+
+```bash
+cd mobile
+flutter pub get
+flutter analyze
+flutter test
+flutter build apk --release
+```
+
+Release signing reads `mobile/android/key.properties` (git-ignored); start from `android/key.properties.example`. From the repo root, `./scripts/flutter-release.sh` builds, verifies the signature and writes the APK plus SHA-256 to `dist/`.
+
+### Native (v1)
+
+```bash
+echo "sdk.dir=$ANDROID_HOME" > local.properties
+./gradlew :app:assembleDebug
 ```
 
 ## Documentation
 
-- [Architecture and engine contracts](docs/ARCHITECTURE.md)
+- [Flutter architecture](docs/FLUTTER_ARCHITECTURE.md)
+- [Native v1 architecture](docs/ARCHITECTURE.md)
 - [Changelog](CHANGELOG.md)
 - [Privacy policy](PRIVACY.md)
 
-## Build
+## CI
 
-Requirements: JDK 17+, Android SDK 36 (build-tools 36), Gradle wrapper included.
-
-```bash
-git clone https://github.com/pinchiu/pingtools-network-utilities.git
-cd pingtools-network-utilities
-echo "sdk.dir=$ANDROID_HOME" > local.properties
-./gradlew :app:assembleDebug
-# APK → app/build/outputs/apk/debug/app-debug.apk
-```
-
-CI (`.github/workflows/android.yml`) builds the debug APK and runs unit tests on every push.
+- **Flutter CI** — `flutter analyze`, `flutter test`, debug APK build and artifact upload.
+- **Native CI** — v1 unit tests and debug APK build.
 
 ## Permissions
 
 | Permission | Why |
 | --- | --- |
-| `INTERNET`, `ACCESS_NETWORK_STATE` | All network tools, public IP lookup, HTTP inspection. |
+| `INTERNET`, `ACCESS_NETWORK_STATE` | All network tools and the update check. |
 | `ACCESS_WIFI_STATE`, `CHANGE_WIFI_MULTICAST_STATE` | Wi-Fi link details and Wake-on-LAN broadcast. |
-| `ACCESS_FINE_LOCATION`, `NEARBY_WIFI_DEVICES` | Android only exposes the connected Wi-Fi SSID/BSSID to apps with location/nearby-Wi-Fi permission. Requested at runtime, used for display only. |
+| `ACCESS_FINE_LOCATION`, `NEARBY_WIFI_DEVICES` | Android only reveals the connected SSID/BSSID with these permissions. Requested from the Connection screen, display-only. |
+| `REQUEST_INSTALL_PACKAGES` | Only used when you choose to install an update; Android still requires the per-app “install unknown apps” toggle. |
 
 ## Notes & limitations
 
-- Android may deny raw ICMP sockets to unprivileged apps depending on the device kernel. Ping automatically falls back to TCP latency and says so; traceroute requires ICMP and will report when unavailable.
-- Android 10+ blocks unprivileged access to `/proc/net/arp` and `/proc/net/route`. Subnet scans still discover live hosts, but MAC addresses may be unavailable and the gateway is resolved through `LinkProperties` instead.
-- Many carriers block port 43 (WHOIS) and ICMP. Results depend on the network you are on.
-- Public-IP geolocation is city-level and provided by [ipwho.is](https://ipwho.is) with [ipapi.co](https://ipapi.co) as fallback.
+- Android may block raw ICMP depending on the kernel/`ping_group_range`; Ping falls back to TCP and says so. Traceroute requires ICMP.
+- Android 10+ hides `/proc/net/arp`; subnet scans still find hosts, but MAC addresses may show as unavailable.
+- Some carriers block ICMP or WHOIS port 43.
+- The Dart HTTP client exposes TLS certificate details but not the negotiated TLS version/cipher; the inspector shows the certificate instead.
+- HTTP inspection intentionally permits cleartext for URLs you enter; every automatic request the app makes (geo, updates, GitHub) is HTTPS.
 - Use these tools only on devices and networks you own or are authorized to test.
 
 ## License
