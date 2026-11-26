@@ -38,7 +38,8 @@ if [[ ! -f "$UNSIGNED" ]]; then
 fi
 
 VERSION="$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)"
-OUT="docs/PingTools-${VERSION}-release.apk"
+mkdir -p dist
+OUT="dist/PingTools-${VERSION}-release.apk"
 
 "$APKSIGNER" sign \
   --ks "$KEYSTORE" \
