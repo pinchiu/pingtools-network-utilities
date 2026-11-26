@@ -1,5 +1,6 @@
 package com.pinchiu.pingtools.core.util
 
+import android.os.Build
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -70,8 +71,14 @@ object Shell {
         outReader.start()
         errReader.start()
 
-        val finished = process.waitFor(timeoutMs, TimeUnit.MILLISECONDS)
-        if (!finished) process.destroyForcibly()
+        val finished = waitForCompat(process, timeoutMs)
+        if (!finished) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                process.destroyForcibly()
+            } else {
+                process.destroy()
+            }
+        }
         outReader.join(500)
         errReader.join(500)
 
@@ -80,5 +87,27 @@ object Shell {
             stdout = outBuilder.toString().trim(),
             stderr = errBuilder.toString().trim()
         )
+    }
+
+    /** Process.waitFor(timeout) is API 26+; poll on Android 7.x. */
+    private fun waitForCompat(process: Process, timeoutMs: Long): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return process.waitFor(timeoutMs, TimeUnit.MILLISECONDS)
+        }
+        val deadline = System.currentTimeMillis() + timeoutMs
+        while (System.currentTimeMillis() < deadline) {
+            try {
+                process.exitValue()
+                return true
+            } catch (_: IllegalThreadStateException) {
+                try {
+                    Thread.sleep(50)
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    return false
+                }
+            }
+        }
+        return false
     }
 }
