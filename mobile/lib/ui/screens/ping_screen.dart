@@ -20,7 +20,9 @@ class PingScreen extends StatefulWidget {
 }
 
 class _PingScreenState extends State<PingScreen> {
-  final TextEditingController _host = TextEditingController(text: '1.1.1.1');
+  final TextEditingController _host = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('ping', '1.1.1.1'),
+  );
   final PingViewModel _vm = PingViewModel();
   List<String> _recent = const [];
 
@@ -32,6 +34,7 @@ class _PingScreenState extends State<PingScreen> {
 
   @override
   void dispose() {
+    unawaited(AppSettings.instance.rememberInputNow('ping', _host.text));
     _host.dispose();
     _vm.dispose();
     super.dispose();
@@ -52,6 +55,7 @@ class _PingScreenState extends State<PingScreen> {
       return;
     }
     if (_host.text != host) _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('ping', host));
     _vm.start(host);
     unawaited(AppSettings.instance.addRecent('ping', host));
     _refreshRecent();
@@ -59,6 +63,7 @@ class _PingScreenState extends State<PingScreen> {
 
   void _useRecent(String host) {
     _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('ping', host));
     _vm.clearError();
   }
 
@@ -95,7 +100,8 @@ class _PingScreenState extends State<PingScreen> {
                 enabled: !vm.running,
                 monospace: true,
                 keyboardType: TextInputType.url,
-                onChanged: (_) {
+                onChanged: (value) {
+                  AppSettings.instance.rememberInput('ping', value);
                   _vm.clearError();
                   setState(() {});
                 },

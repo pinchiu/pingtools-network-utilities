@@ -4,7 +4,9 @@ import 'models.dart';
 
 /// Thin wrapper around the Android host channel.
 class NativeBridge {
-  static const MethodChannel _channel = MethodChannel('com.pinchiu.pingtools/native');
+  static const MethodChannel _channel = MethodChannel(
+    'com.pinchiu.pingtools/native',
+  );
 
   static Map<String, dynamic>? _map(dynamic value) {
     if (value is Map) return value.cast<String, dynamic>();
@@ -19,7 +21,9 @@ class NativeBridge {
         return const ConnectionInfo(connectionType: 'Unknown');
       }
       final wifiMap = _map(map['wifi']);
-      final dns = (map['dnsServers'] as List?)?.map((e) => '$e').toList() ?? const <String>[];
+      final dns =
+          (map['dnsServers'] as List?)?.map((e) => '$e').toList() ??
+          const <String>[];
       return ConnectionInfo(
         connectionType: map['connectionType'] as String? ?? 'Unknown',
         localIpv4: map['localIpv4'] as String?,
@@ -54,7 +58,8 @@ class NativeBridge {
 
   static Future<bool> requestWifiPermissions() async {
     try {
-      return await _channel.invokeMethod<bool>('requestWifiPermissions') ?? false;
+      return await _channel.invokeMethod<bool>('requestWifiPermissions') ??
+          false;
     } catch (_) {
       return false;
     }
@@ -62,7 +67,8 @@ class NativeBridge {
 
   static Future<bool> openUrl(String url) async {
     try {
-      return await _channel.invokeMethod<bool>('openUrl', {'url': url}) ?? false;
+      return await _channel.invokeMethod<bool>('openUrl', {'url': url}) ??
+          false;
     } catch (_) {
       return false;
     }
@@ -78,7 +84,9 @@ class NativeBridge {
 
   static Future<InstallOutcome> installApk(String path) async {
     try {
-      final raw = await _channel.invokeMethod<dynamic>('installApk', {'path': path});
+      final raw = await _channel.invokeMethod<dynamic>('installApk', {
+        'path': path,
+      });
       final map = _map(raw);
       final status = map?['status'] as String? ?? 'error';
       final message = map?['message'] as String?;
@@ -88,7 +96,10 @@ class NativeBridge {
         case 'permissionRequired':
           return InstallOutcome(InstallStatus.permissionRequired, message);
         default:
-          return InstallOutcome(InstallStatus.error, message ?? 'Install failed');
+          return InstallOutcome(
+            InstallStatus.error,
+            message ?? 'Install failed',
+          );
       }
     } catch (e) {
       return InstallOutcome(InstallStatus.error, '$e');

@@ -96,7 +96,7 @@ mobile/                     Flutter Cupertino app (v2, active)
 ├── lib/core/               models, settings, native bridge, network engines
 ├── lib/ui/                 Cupertino theme, widgets, screens
 ├── android/                Kotlin host: Wi-Fi info, permissions, APK installer
-└── test/                   49 unit/widget tests
+└── test/                   53 unit/widget tests
 
 app/                        Native Kotlin + Jetpack Compose app (v1, preserved)
 docs/                       architecture, screenshots, branding SVG

@@ -1,7 +1,7 @@
 name: pingtools
 description: "PingTools Network Utilities — a pure Cupertino Flutter network toolkit."
 publish_to: 'none'
-version: 2.0.0+2
+version: 2.0.1+3
 
 environment:
   sdk: ^3.14.0

@@ -48,7 +48,9 @@ String normalizeHost(String input) {
   return host.trim();
 }
 
-final RegExp _ipv4Pattern = RegExp(r'^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$');
+final RegExp _ipv4Pattern = RegExp(
+  r'^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$',
+);
 
 bool isValidIpv4(String value) {
   final match = _ipv4Pattern.firstMatch(value.trim());
@@ -77,7 +79,8 @@ bool isPrivateIp(String value) {
 int? ipv4ToInt(String ip) {
   if (!isValidIpv4(ip)) return null;
   final parts = ip.split('.').map(int.parse).toList();
-  return ((parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]) & 0xFFFFFFFF;
+  return ((parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]) &
+      0xFFFFFFFF;
 }
 
 String intToIpv4(int value) {
@@ -113,12 +116,20 @@ List<int> parsePortSpec(String spec) {
     if (part.isEmpty) continue;
     if (part.contains('-')) {
       final bounds = part.split('-');
-      if (bounds.length != 2) throw FormatException('Invalid port: $part');
+      if (bounds.length != 2) {
+        throw FormatException('Invalid port: $part');
+      }
       final start = int.tryParse(bounds[0].trim());
       final end = int.tryParse(bounds[1].trim());
-      if (start == null || end == null) throw FormatException('Invalid port: $part');
-      if (start > end) throw FormatException('Range start must be <= end: $part');
-      if (start < 1 || end > 65535) throw const FormatException('Ports must be 1-65535');
+      if (start == null || end == null) {
+        throw FormatException('Invalid port: $part');
+      }
+      if (start > end) {
+        throw FormatException('Range start must be <= end: $part');
+      }
+      if (start < 1 || end > 65535) {
+        throw const FormatException('Ports must be 1-65535');
+      }
       if (end - start > 4096) {
         throw const FormatException('Range too large (max 4096 ports)');
       }
@@ -128,28 +139,76 @@ List<int> parsePortSpec(String spec) {
     } else {
       final port = int.tryParse(part);
       if (port == null) throw FormatException('Invalid port: $part');
-      if (port < 1 || port > 65535) throw const FormatException('Ports must be 1-65535');
+      if (port < 1 || port > 65535) {
+        throw const FormatException('Ports must be 1-65535');
+      }
       ports.add(port);
     }
   }
   if (ports.isEmpty) throw const FormatException('Enter at least one port');
-  if (ports.length > 4096) throw const FormatException('Too many ports (max 4096)');
+  if (ports.length > 4096) {
+    throw const FormatException('Too many ports (max 4096)');
+  }
   final sorted = ports.toList()..sort();
   return sorted;
 }
 
 const Map<int, String> _serviceNames = {
-  7: 'echo', 9: 'discard', 20: 'ftp-data', 21: 'ftp', 22: 'ssh', 23: 'telnet',
-  25: 'smtp', 53: 'dns', 67: 'dhcp', 69: 'tftp', 80: 'http', 110: 'pop3',
-  111: 'rpcbind', 123: 'ntp', 135: 'msrpc', 137: 'netbios-ns', 138: 'netbios-dgm',
-  139: 'netbios-ssn', 143: 'imap', 161: 'snmp', 389: 'ldap', 443: 'https',
-  445: 'smb', 465: 'smtps', 500: 'isakmp', 514: 'syslog', 587: 'submission',
-  631: 'ipp', 636: 'ldaps', 993: 'imaps', 995: 'pop3s', 1080: 'socks',
-  1194: 'openvpn', 1433: 'mssql', 1521: 'oracle', 1723: 'pptp', 1883: 'mqtt',
-  2049: 'nfs', 2375: 'docker', 3128: 'squid', 3306: 'mysql', 3389: 'rdp',
-  5060: 'sip', 5432: 'postgresql', 5672: 'amqp', 5900: 'vnc', 6379: 'redis',
-  8000: 'http-alt', 8080: 'http-proxy', 8443: 'https-alt', 8888: 'http-alt',
-  9000: 'http-alt', 9090: 'http-alt', 9100: 'jetdirect', 27017: 'mongodb',
+  7: 'echo',
+  9: 'discard',
+  20: 'ftp-data',
+  21: 'ftp',
+  22: 'ssh',
+  23: 'telnet',
+  25: 'smtp',
+  53: 'dns',
+  67: 'dhcp',
+  69: 'tftp',
+  80: 'http',
+  110: 'pop3',
+  111: 'rpcbind',
+  123: 'ntp',
+  135: 'msrpc',
+  137: 'netbios-ns',
+  138: 'netbios-dgm',
+  139: 'netbios-ssn',
+  143: 'imap',
+  161: 'snmp',
+  389: 'ldap',
+  443: 'https',
+  445: 'smb',
+  465: 'smtps',
+  500: 'isakmp',
+  514: 'syslog',
+  587: 'submission',
+  631: 'ipp',
+  636: 'ldaps',
+  993: 'imaps',
+  995: 'pop3s',
+  1080: 'socks',
+  1194: 'openvpn',
+  1433: 'mssql',
+  1521: 'oracle',
+  1723: 'pptp',
+  1883: 'mqtt',
+  2049: 'nfs',
+  2375: 'docker',
+  3128: 'squid',
+  3306: 'mysql',
+  3389: 'rdp',
+  5060: 'sip',
+  5432: 'postgresql',
+  5672: 'amqp',
+  5900: 'vnc',
+  6379: 'redis',
+  8000: 'http-alt',
+  8080: 'http-proxy',
+  8443: 'https-alt',
+  8888: 'http-alt',
+  9000: 'http-alt',
+  9090: 'http-alt',
+  9100: 'jetdirect',
+  27017: 'mongodb',
 };
 
 String serviceNameForPort(int port) => _serviceNames[port] ?? '';
@@ -188,7 +247,9 @@ SubnetInfo? parseSubnetInput(String input) {
   if (!isValidIpv4(start) || !isValidIpv4(end)) return null;
   final startValue = ipv4ToInt(start);
   final endValue = ipv4ToInt(end);
-  if (startValue == null || endValue == null || endValue <= startValue) return null;
+  if (startValue == null || endValue == null || endValue <= startValue) {
+    return null;
+  }
   final count = endValue - startValue + 1;
   if (count > 4096) return null;
   var prefix = 32;

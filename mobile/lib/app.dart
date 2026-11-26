@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:flutter_localizations/flutter_localizations.dart' show GlobalWidgetsLocalizations;
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show GlobalWidgetsLocalizations;
 
 import 'core/app_settings.dart';
 import 'ui/screens/home_screen.dart';
@@ -12,7 +15,8 @@ class PingToolsApp extends StatefulWidget {
   State<PingToolsApp> createState() => _PingToolsAppState();
 }
 
-class _PingToolsAppState extends State<PingToolsApp> with WidgetsBindingObserver {
+class _PingToolsAppState extends State<PingToolsApp>
+    with WidgetsBindingObserver {
   Brightness _platformBrightness =
       WidgetsBinding.instance.platformDispatcher.platformBrightness;
 
@@ -31,8 +35,18 @@ class _PingToolsAppState extends State<PingToolsApp> with WidgetsBindingObserver
   @override
   void didChangePlatformBrightness() {
     setState(() {
-      _platformBrightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      _platformBrightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      unawaited(AppSettings.instance.flushInputs());
+    }
   }
 
   Brightness _effectiveBrightness(AppSettings settings) {

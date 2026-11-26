@@ -36,7 +36,7 @@ class SubnetViewModel extends ChangeNotifier {
   }
 
   final TextEditingController cidrController = TextEditingController(
-    text: '192.168.1.0/24',
+    text: AppSettings.instance.inputOrDefault('subnet', ''),
   );
 
   SubnetInfo? _detected;
@@ -47,7 +47,8 @@ class SubnetViewModel extends ChangeNotifier {
   int _scanned = 0;
   int _total = 0;
   bool _scanning = false;
-  bool _includePortProbe = false;
+  bool _includePortProbe =
+      AppSettings.instance.prefBool('subnet_ports') ?? false;
   int _durationMs = 0;
   String? _error;
   String? _gateway;
@@ -83,6 +84,9 @@ class SubnetViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    unawaited(
+      AppSettings.instance.rememberInputNow('subnet', cidrController.text),
+    );
     try {
       _subscription?.cancel();
     } catch (_) {
@@ -138,7 +142,10 @@ class SubnetViewModel extends ChangeNotifier {
     }
     _detected = info;
     _gateway = info.gateway;
-    if (!_cidrTouched && !_scanning && _info == null) {
+    if (!_cidrTouched &&
+        !_scanning &&
+        _info == null &&
+        cidrController.text.trim().isEmpty) {
       cidrController.text = info.cidr;
       cidrController.selection = TextSelection.collapsed(
         offset: info.cidr.length,
@@ -149,6 +156,7 @@ class SubnetViewModel extends ChangeNotifier {
 
   void markEdited() {
     _cidrTouched = true;
+    AppSettings.instance.rememberInput('subnet', cidrController.text);
     if (_scanning) return;
     _info = null;
     _hosts = const [];
@@ -163,12 +171,14 @@ class SubnetViewModel extends ChangeNotifier {
     if (_scanning) return;
     cidrController.text = cidr;
     cidrController.selection = TextSelection.collapsed(offset: cidr.length);
+    unawaited(AppSettings.instance.rememberInputNow('subnet', cidr));
     markEdited();
   }
 
   void setPortProbe(bool value) {
     if (_scanning || value == _includePortProbe) return;
     _includePortProbe = value;
+    unawaited(AppSettings.instance.setPrefBool('subnet_ports', value));
     _notify();
   }
 
@@ -176,6 +186,7 @@ class SubnetViewModel extends ChangeNotifier {
     if (_scanning) return;
     final input = cidrController.text.trim();
     final info = parseSubnetInput(input);
+    unawaited(AppSettings.instance.rememberInputNow('subnet', input));
     final usable = info == null ? 0 : _usableTotal(info);
     if (info == null || usable <= 0 || usable > 4096) {
       _error = 'invalidInput';

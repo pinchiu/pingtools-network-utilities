@@ -21,7 +21,9 @@ class GeoPingScreen extends StatefulWidget {
 }
 
 class _GeoPingScreenState extends State<GeoPingScreen> {
-  final TextEditingController _host = TextEditingController(text: '8.8.8.8');
+  final TextEditingController _host = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('geo', '8.8.8.8'),
+  );
   final GeoPingViewModel _vm = GeoPingViewModel();
   List<String> _recent = const [];
 
@@ -33,6 +35,7 @@ class _GeoPingScreenState extends State<GeoPingScreen> {
 
   @override
   void dispose() {
+    unawaited(AppSettings.instance.rememberInputNow('geo', _host.text));
     _host.dispose();
     _vm.dispose();
     super.dispose();
@@ -53,6 +56,7 @@ class _GeoPingScreenState extends State<GeoPingScreen> {
       return;
     }
     if (_host.text != host) _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('geo', host));
     _vm.start(host);
     unawaited(AppSettings.instance.addRecent('geo', host));
     _refreshRecent();
@@ -60,6 +64,7 @@ class _GeoPingScreenState extends State<GeoPingScreen> {
 
   void _useRecent(String host) {
     _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('geo', host));
     _vm.clearError();
   }
 
@@ -108,7 +113,8 @@ class _GeoPingScreenState extends State<GeoPingScreen> {
                 enabled: !vm.running,
                 monospace: true,
                 keyboardType: TextInputType.url,
-                onChanged: (_) {
+                onChanged: (value) {
+                  AppSettings.instance.rememberInput('geo', value);
                   vm.clearError();
                   setState(() {});
                 },

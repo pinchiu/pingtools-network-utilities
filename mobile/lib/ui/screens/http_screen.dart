@@ -80,7 +80,8 @@ class _HttpScreenState extends State<HttpScreen> {
                       placeholder: 'https://example.com',
                       monospace: true,
                       keyboardType: TextInputType.url,
-                      onChanged: (_) {
+                      onChanged: (value) {
+                        AppSettings.instance.rememberInput('http', value);
                         if (_viewModel.invalidUrl) _viewModel.clearValidation();
                       },
                     ),
@@ -220,13 +221,14 @@ class _HttpScreenState extends State<HttpScreen> {
 class _HttpViewModel extends ChangeNotifier {
   final AppSettings _settings = AppSettings.instance;
   final TextEditingController urlController = TextEditingController(
-    text: 'https://example.com',
+    text: AppSettings.instance.inputOrDefault('http', 'https://example.com'),
   );
 
   List<String> history = [];
   HttpInfo? result;
   bool loading = false;
-  bool followRedirects = true;
+  bool followRedirects =
+      AppSettings.instance.prefBool('http_follow_redirects') ?? true;
   bool invalidUrl = false;
   String? errorDetail;
   bool _disposed = false;
@@ -237,6 +239,7 @@ class _HttpViewModel extends ChangeNotifier {
 
   void setFollowRedirects(bool value) {
     followRedirects = value;
+    unawaited(_settings.setPrefBool('http_follow_redirects', value));
     notifyListeners();
   }
 
@@ -249,6 +252,7 @@ class _HttpViewModel extends ChangeNotifier {
   void useHistory(String url) {
     urlController.text = url;
     urlController.selection = TextSelection.collapsed(offset: url.length);
+    unawaited(_settings.rememberInputNow('http', url));
     unawaited(inspect());
   }
 
@@ -267,6 +271,7 @@ class _HttpViewModel extends ChangeNotifier {
     errorDetail = null;
     result = null;
     loading = true;
+    unawaited(_settings.rememberInputNow('http', url));
     notifyListeners();
     try {
       final info = await HttpEngine.inspect(
@@ -298,6 +303,7 @@ class _HttpViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    unawaited(_settings.rememberInputNow('http', urlController.text));
     urlController.dispose();
     super.dispose();
   }

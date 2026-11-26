@@ -276,16 +276,25 @@ class _WolScreenState extends State<WolScreen> {
 class _WolViewModel extends ChangeNotifier {
   final AppSettings _settings = AppSettings.instance;
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController macController = TextEditingController();
-  final TextEditingController broadcastController = TextEditingController(
-    text: '255.255.255.255',
+  final TextEditingController nameController = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('wol_name', ''),
   );
-  final TextEditingController portController = TextEditingController(text: '9');
+  final TextEditingController macController = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('wol_mac', ''),
+  );
+  final TextEditingController broadcastController = TextEditingController(
+    text: AppSettings.instance.inputOrDefault(
+      'wol_broadcast',
+      '255.255.255.255',
+    ),
+  );
+  final TextEditingController portController = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('wol_port', '9'),
+  );
 
   final List<WolDevice> _session = [];
   List<WolDevice> devices = [];
-  bool saveDevice = true;
+  bool saveDevice = AppSettings.instance.prefBool('wol_save') ?? true;
   String? sendingMac;
   WolOutcome? outcome;
   String? errorDetail;
@@ -295,6 +304,21 @@ class _WolViewModel extends ChangeNotifier {
 
   _WolViewModel() {
     _reload();
+    nameController.addListener(
+      () => AppSettings.instance.rememberInput('wol_name', nameController.text),
+    );
+    macController.addListener(
+      () => AppSettings.instance.rememberInput('wol_mac', macController.text),
+    );
+    broadcastController.addListener(
+      () => AppSettings.instance.rememberInput(
+        'wol_broadcast',
+        broadcastController.text,
+      ),
+    );
+    portController.addListener(
+      () => AppSettings.instance.rememberInput('wol_port', portController.text),
+    );
   }
 
   void _reload() {
@@ -310,6 +334,7 @@ class _WolViewModel extends ChangeNotifier {
 
   void setSaveDevice(bool value) {
     saveDevice = value;
+    unawaited(AppSettings.instance.setPrefBool('wol_save', value));
     notifyListeners();
   }
 
@@ -425,6 +450,21 @@ class _WolViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    unawaited(
+      AppSettings.instance.rememberInputNow('wol_name', nameController.text),
+    );
+    unawaited(
+      AppSettings.instance.rememberInputNow('wol_mac', macController.text),
+    );
+    unawaited(
+      AppSettings.instance.rememberInputNow(
+        'wol_broadcast',
+        broadcastController.text,
+      ),
+    );
+    unawaited(
+      AppSettings.instance.rememberInputNow('wol_port', portController.text),
+    );
     nameController.dispose();
     macController.dispose();
     broadcastController.dispose();

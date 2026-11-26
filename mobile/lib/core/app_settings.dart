@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
@@ -19,6 +20,9 @@ class AppSettings extends ChangeNotifier {
   late SharedPreferences _prefs;
   String _localeCode = 'en';
   String _themeMode = 'system';
+
+  final Map<String, Timer> _inputTimers = {};
+  final Map<String, String> _pendingInputs = {};
 
   String get localeCode => _localeCode;
   String get themeMode => _themeMode;
@@ -44,6 +48,56 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setString(_kTheme, mode);
     notifyListeners();
   }
+
+  // -------------------------------------------------------------------------
+  // Form input memory
+  // -------------------------------------------------------------------------
+
+  /// Saved value for a tool's primary text field, or [fallback].
+  String inputOrDefault(String tool, String fallback) {
+    final value = _prefs.getString('last_$tool');
+    if (value == null || value.trim().isEmpty) return fallback;
+    return value;
+  }
+
+  /// Debounced write while the user types (300 ms).
+  void rememberInput(String tool, String value) {
+    _pendingInputs[tool] = value;
+    _inputTimers.remove(tool)?.cancel();
+    _inputTimers[tool] = Timer(const Duration(milliseconds: 300), () {
+      _inputTimers.remove(tool);
+      final pending = _pendingInputs.remove(tool);
+      if (pending != null) {
+        _prefs.setString('last_$tool', pending);
+      }
+    });
+  }
+
+  /// Immediate write when starting a run or leaving a screen.
+  Future<void> rememberInputNow(String tool, String value) async {
+    _inputTimers.remove(tool)?.cancel();
+    _pendingInputs.remove(tool);
+    await _prefs.setString('last_$tool', value);
+  }
+
+  Future<void> flushInputs() async {
+    for (final entry in _pendingInputs.entries) {
+      _inputTimers.remove(entry.key)?.cancel();
+      await _prefs.setString('last_${entry.key}', entry.value);
+    }
+    _pendingInputs.clear();
+  }
+
+  /// Generic preference helpers for dropdowns and switches.
+  String? prefString(String key) => _prefs.getString(key);
+
+  bool? prefBool(String key) => _prefs.getBool(key);
+
+  Future<void> setPrefString(String key, String value) =>
+      _prefs.setString(key, value);
+
+  Future<void> setPrefBool(String key, bool value) =>
+      _prefs.setBool(key, value);
 
   List<String> recent(String tool, {int limit = 5}) {
     final value = _prefs.getString('recent_$tool');

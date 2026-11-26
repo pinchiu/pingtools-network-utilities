@@ -4,6 +4,18 @@ All notable changes to PingTools are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.1] — 2026-11-26
+
+### Fixed
+
+- **Your last input is remembered per tool.** Ping, Geo Ping, Traceroute, Port
+  Scanner (host and port list), DNS (query, record type and resolver), WHOIS,
+  Subnet Scanner (CIDR and port-probe toggle), HTTP Inspector (URL and redirect
+  setting) and the Wake-on-LAN form now restore what you typed after navigating
+  away or restarting the app.
+- Pending input writes are flushed when the app moves to the background, and
+  saved immediately when a run starts or a screen is closed.
+
 ## [2.0.0] — 2026-11-26
 
 ### Changed

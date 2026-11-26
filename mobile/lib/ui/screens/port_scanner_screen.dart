@@ -19,9 +19,14 @@ class PortScannerScreen extends StatefulWidget {
 }
 
 class _PortScannerScreenState extends State<PortScannerScreen> {
-  final TextEditingController _host = TextEditingController(text: '1.1.1.1');
+  final TextEditingController _host = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('ports_host', '1.1.1.1'),
+  );
   final TextEditingController _spec = TextEditingController(
-    text: portPresets.first.spec,
+    text: AppSettings.instance.inputOrDefault(
+      'ports_spec',
+      portPresets.first.spec,
+    ),
   );
   final PortScannerViewModel _vm = PortScannerViewModel();
   List<String> _recent = const [];
@@ -34,6 +39,8 @@ class _PortScannerScreenState extends State<PortScannerScreen> {
 
   @override
   void dispose() {
+    unawaited(AppSettings.instance.rememberInputNow('ports_host', _host.text));
+    unawaited(AppSettings.instance.rememberInputNow('ports_spec', _spec.text));
     _host.dispose();
     _spec.dispose();
     _vm.dispose();
@@ -64,6 +71,8 @@ class _PortScannerScreenState extends State<PortScannerScreen> {
       return;
     }
     if (_host.text != host) _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('ports_host', host));
+    unawaited(AppSettings.instance.rememberInputNow('ports_spec', _spec.text));
     _vm.start(host: host, ports: ports);
     unawaited(AppSettings.instance.addRecent('ports', host));
     _refreshRecent();
@@ -71,11 +80,13 @@ class _PortScannerScreenState extends State<PortScannerScreen> {
 
   void _useRecent(String host) {
     _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('ports_host', host));
     _vm.clearInputError();
   }
 
   void _applyPreset(PortPreset preset) {
     setState(() => _spec.text = preset.spec);
+    unawaited(AppSettings.instance.rememberInputNow('ports_spec', preset.spec));
     _vm.clearInputError();
   }
 
@@ -114,7 +125,10 @@ class _PortScannerScreenState extends State<PortScannerScreen> {
                     enabled: !vm.running,
                     monospace: true,
                     keyboardType: TextInputType.url,
-                    onChanged: (_) => vm.clearInputError(),
+                    onChanged: (value) {
+                      AppSettings.instance.rememberInput('ports_host', value);
+                      vm.clearInputError();
+                    },
                   );
                   final portsField = AppField(
                     label: context.tr('Ports', '連接埠'),
@@ -123,7 +137,10 @@ class _PortScannerScreenState extends State<PortScannerScreen> {
                     enabled: !vm.running,
                     monospace: true,
                     keyboardType: TextInputType.text,
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (value) {
+                      AppSettings.instance.rememberInput('ports_spec', value);
+                      setState(() {});
+                    },
                   );
                   if (constraints.maxWidth >= 560) {
                     return Row(

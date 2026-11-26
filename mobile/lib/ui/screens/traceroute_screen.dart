@@ -20,7 +20,9 @@ class TracerouteScreen extends StatefulWidget {
 }
 
 class _TracerouteScreenState extends State<TracerouteScreen> {
-  final TextEditingController _host = TextEditingController(text: 'github.com');
+  final TextEditingController _host = TextEditingController(
+    text: AppSettings.instance.inputOrDefault('trace', 'github.com'),
+  );
   final TracerouteViewModel _vm = TracerouteViewModel();
   List<String> _recent = const [];
   bool _copied = false;
@@ -35,6 +37,7 @@ class _TracerouteScreenState extends State<TracerouteScreen> {
   @override
   void dispose() {
     _copiedTimer?.cancel();
+    unawaited(AppSettings.instance.rememberInputNow('trace', _host.text));
     _host.dispose();
     _vm.dispose();
     super.dispose();
@@ -55,6 +58,7 @@ class _TracerouteScreenState extends State<TracerouteScreen> {
       return;
     }
     if (_host.text != host) _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('trace', host));
     _copiedTimer?.cancel();
     setState(() => _copied = false);
     _vm.start(host);
@@ -64,6 +68,7 @@ class _TracerouteScreenState extends State<TracerouteScreen> {
 
   void _useRecent(String host) {
     _host.text = host;
+    unawaited(AppSettings.instance.rememberInputNow('trace', host));
     _vm.clearError();
   }
 
@@ -130,7 +135,10 @@ class _TracerouteScreenState extends State<TracerouteScreen> {
                 enabled: !vm.running,
                 monospace: true,
                 keyboardType: TextInputType.url,
-                onChanged: (_) => vm.clearError(),
+                onChanged: (value) {
+                  AppSettings.instance.rememberInput('trace', value);
+                  vm.clearError();
+                },
               ),
               const SizedBox(height: 8),
               Text(

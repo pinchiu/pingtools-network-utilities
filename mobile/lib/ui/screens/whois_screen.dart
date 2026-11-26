@@ -274,7 +274,7 @@ class WhoisScreen extends StatefulWidget {
 class _WhoisScreenState extends State<WhoisScreen> {
   final WhoisViewModel _vm = WhoisViewModel();
   final TextEditingController _query = TextEditingController(
-    text: 'example.com',
+    text: AppSettings.instance.inputOrDefault('whois', 'example.com'),
   );
   Timer? _copiedTimer;
   bool _copied = false;
@@ -286,6 +286,7 @@ class _WhoisScreenState extends State<WhoisScreen> {
   @override
   void dispose() {
     _copiedTimer?.cancel();
+    unawaited(AppSettings.instance.rememberInputNow('whois', _query.text));
     _query.dispose();
     _vm.dispose();
     super.dispose();
@@ -293,6 +294,7 @@ class _WhoisScreenState extends State<WhoisScreen> {
 
   void _run(String value) {
     FocusScope.of(context).unfocus();
+    unawaited(AppSettings.instance.rememberInputNow('whois', value));
     _vm.lookup(value);
   }
 
@@ -409,7 +411,10 @@ class _WhoisScreenState extends State<WhoisScreen> {
                       monospace: true,
                       enabled: !_vm.loading,
                       textInputAction: TextInputAction.search,
-                      onChanged: (_) => _vm.clearError(),
+                      onChanged: (value) {
+                        AppSettings.instance.rememberInput('whois', value);
+                        _vm.clearError();
+                      },
                       suffix: CupertinoButton(
                         padding: const EdgeInsets.only(right: 10, left: 4),
                         onPressed: _vm.loading ? null : () => _run(_query.text),

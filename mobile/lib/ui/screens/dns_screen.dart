@@ -168,7 +168,7 @@ class DnsScreen extends StatefulWidget {
 class _DnsScreenState extends State<DnsScreen> {
   final DnsViewModel _vm = DnsViewModel();
   final TextEditingController _query = TextEditingController(
-    text: 'example.com',
+    text: AppSettings.instance.inputOrDefault('dns', 'example.com'),
   );
   Timer? _copiedTimer;
   bool _copied = false;
@@ -176,8 +176,22 @@ class _DnsScreenState extends State<DnsScreen> {
   Color get _accent => adaptiveAccent(context, toolById('dns')!.accent);
 
   @override
+  void initState() {
+    super.initState();
+    final savedType = AppSettings.instance.prefString('dns_type');
+    for (final type in DnsType.values) {
+      if (type.name == savedType) _vm.setType(type);
+    }
+    final savedResolver = int.tryParse(
+      AppSettings.instance.prefString('dns_resolver') ?? '',
+    );
+    if (savedResolver != null) _vm.setResolver(savedResolver);
+  }
+
+  @override
   void dispose() {
     _copiedTimer?.cancel();
+    unawaited(AppSettings.instance.rememberInputNow('dns', _query.text));
     _query.dispose();
     _vm.dispose();
     super.dispose();
@@ -185,16 +199,19 @@ class _DnsScreenState extends State<DnsScreen> {
 
   void _run(String value) {
     FocusScope.of(context).unfocus();
+    unawaited(AppSettings.instance.rememberInputNow('dns', value));
     _vm.lookup(value);
   }
 
   void _reverse(String value) {
     FocusScope.of(context).unfocus();
+    unawaited(AppSettings.instance.rememberInputNow('dns', value));
     _vm.reverse(value);
   }
 
   void _runRecent(String value) {
     _query.text = value;
+    unawaited(AppSettings.instance.rememberInputNow('dns', value));
     if (isValidIpv4(value) || value.contains(':')) {
       _reverse(value);
     } else {
@@ -217,6 +234,9 @@ class _DnsScreenState extends State<DnsScreen> {
     );
     if (!mounted || index == null) return;
     _vm.setType(types[index]);
+    unawaited(
+      AppSettings.instance.setPrefString('dns_type', types[index].name),
+    );
   }
 
   Future<void> _pickResolver() async {
@@ -239,6 +259,7 @@ class _DnsScreenState extends State<DnsScreen> {
     );
     if (!mounted || index == null) return;
     _vm.setResolver(index);
+    unawaited(AppSettings.instance.setPrefString('dns_resolver', '$index'));
   }
 
   String _errorText(BuildContext context, String? error) {
@@ -390,7 +411,10 @@ class _DnsScreenState extends State<DnsScreen> {
                       monospace: true,
                       enabled: !_vm.loading,
                       textInputAction: TextInputAction.search,
-                      onChanged: (_) => _vm.clearError(),
+                      onChanged: (value) {
+                        AppSettings.instance.rememberInput('dns', value);
+                        _vm.clearError();
+                      },
                       suffix: CupertinoButton(
                         padding: const EdgeInsets.only(right: 10, left: 4),
                         onPressed: _vm.loading ? null : () => _run(_query.text),

@@ -64,7 +64,11 @@ class PingStarted extends PingEvent {
   final String target;
   final String? resolvedIp;
   final PingMode mode;
-  const PingStarted({required this.target, this.resolvedIp, required this.mode});
+  const PingStarted({
+    required this.target,
+    this.resolvedIp,
+    required this.mode,
+  });
 }
 
 class PingReplyEvent extends PingEvent {
@@ -205,7 +209,11 @@ class PortScanStarted extends PortScanEvent {
   final String host;
   final String? resolvedIp;
   final int total;
-  const PortScanStarted({required this.host, this.resolvedIp, required this.total});
+  const PortScanStarted({
+    required this.host,
+    this.resolvedIp,
+    required this.total,
+  });
 }
 
 class PortScanProgressEvent extends PortScanEvent {
@@ -352,12 +360,12 @@ class SubnetInfo {
   });
 
   SubnetInfo copyWith({String? gateway}) => SubnetInfo(
-        cidr: cidr,
-        localIp: localIp,
-        prefixLength: prefixLength,
-        gateway: gateway ?? this.gateway,
-        totalHosts: totalHosts,
-      );
+    cidr: cidr,
+    localIp: localIp,
+    prefixLength: prefixLength,
+    gateway: gateway ?? this.gateway,
+    totalHosts: totalHosts,
+  );
 }
 
 sealed class SubnetScanEvent {
@@ -373,7 +381,11 @@ class SubnetScanProgress extends SubnetScanEvent {
   final int scanned;
   final int total;
   final List<LanHost> found;
-  const SubnetScanProgress({required this.scanned, required this.total, required this.found});
+  const SubnetScanProgress({
+    required this.scanned,
+    required this.total,
+    required this.found,
+  });
 }
 
 class SubnetScanFinished extends SubnetScanEvent {
@@ -403,18 +415,18 @@ class WolDevice {
   });
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'mac': mac,
-        'broadcast': broadcast,
-        'port': port,
-      };
+    'name': name,
+    'mac': mac,
+    'broadcast': broadcast,
+    'port': port,
+  };
 
   factory WolDevice.fromJson(Map<String, dynamic> json) => WolDevice(
-        name: json['name'] as String? ?? 'Device',
-        mac: json['mac'] as String? ?? '',
-        broadcast: json['broadcast'] as String? ?? '255.255.255.255',
-        port: (json['port'] as num?)?.toInt() ?? 9,
-      );
+    name: json['name'] as String? ?? 'Device',
+    mac: json['mac'] as String? ?? '',
+    broadcast: json['broadcast'] as String? ?? '255.255.255.255',
+    port: (json['port'] as num?)?.toInt() ?? 9,
+  );
 }
 
 class WolOutcome {

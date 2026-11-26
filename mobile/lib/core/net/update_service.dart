@@ -11,7 +11,8 @@ import '../native_bridge.dart';
 /// GitHub releases based in-app updater.
 class UpdateService {
   static const String repository = 'pinchiu/pingtools-network-utilities';
-  static const String _apiBase = 'https://api.github.com/repos/$repository/releases/latest';
+  static const String _apiBase =
+      'https://api.github.com/repos/$repository/releases/latest';
   static const String _userAgent = 'PingTools/2.0 (Android)';
 
   static final HttpClient _client = HttpClient()
@@ -23,11 +24,17 @@ class UpdateService {
     try {
       final request = await _client.getUrl(Uri.parse(_apiBase));
       request.headers.set(HttpHeaders.userAgentHeader, _userAgent);
-      request.headers.set(HttpHeaders.acceptHeader, 'application/vnd.github+json');
-      final response = await request.close().timeout(const Duration(seconds: 15));
-      final body = await response.transform(utf8.decoder).join().timeout(
-            const Duration(seconds: 15),
-          );
+      request.headers.set(
+        HttpHeaders.acceptHeader,
+        'application/vnd.github+json',
+      );
+      final response = await request.close().timeout(
+        const Duration(seconds: 15),
+      );
+      final body = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(const Duration(seconds: 15));
       if (response.statusCode != 200) {
         return UpdateInfo(
           currentVersion: current,
@@ -105,7 +112,9 @@ class UpdateService {
     if (cleaned.isEmpty) return const [];
     return cleaned
         .split('.')
-        .map((part) => int.tryParse(part.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0)
+        .map(
+          (part) => int.tryParse(part.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0,
+        )
         .toList();
   }
 
@@ -122,7 +131,10 @@ class UpdateService {
     if (!await directory.exists()) {
       await directory.create(recursive: true);
     }
-    final safeVersion = info.latestVersion.replaceAll(RegExp(r'[^0-9A-Za-z._-]'), '_');
+    final safeVersion = info.latestVersion.replaceAll(
+      RegExp(r'[^0-9A-Za-z._-]'),
+      '_',
+    );
     final file = File('${directory.path}/PingTools-$safeVersion.apk');
     if (await file.exists()) {
       await file.delete();
@@ -170,7 +182,9 @@ class UpdateService {
     try {
       final request = await _client.getUrl(Uri.parse(url));
       request.headers.set(HttpHeaders.userAgentHeader, _userAgent);
-      final response = await request.close().timeout(const Duration(seconds: 12));
+      final response = await request.close().timeout(
+        const Duration(seconds: 12),
+      );
       if (response.statusCode != 200) return null;
       final text = await response.transform(utf8.decoder).join();
       final match = RegExp(r'[a-fA-F0-9]{64}').firstMatch(text);
