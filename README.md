@@ -54,6 +54,16 @@ A pure **Cupertino Flutter** network toolkit for Android, rebuilt from the nativ
 
 <sub>Android 15 emulator. Public IP, ISP and location fields are replaced with documentation values.</sub>
 
+### In-app update
+
+<p align="center">
+  <img src="docs/screenshots/flutter/15-update-available-zh.png" width="240" alt="Update available" />
+  <img src="docs/screenshots/flutter/17-update-progress-zh.png" width="240" alt="Downloading update" />
+  <img src="docs/screenshots/flutter/16-update-installer-zh.png" width="240" alt="Android installer prompt" />
+</p>
+
+<p align="center"><sub>Verified end-to-end: a signed 1.9.9 build updates itself to 2.0.0 through the in-app updater.</sub></p>
+
 ## Tools
 
 | Tool | What it does |
