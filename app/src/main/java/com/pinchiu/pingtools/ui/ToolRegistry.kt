@@ -1,7 +1,7 @@
 package com.pinchiu.pingtools.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AltRoute
+import androidx.compose.material.icons.automirrored.outlined.AltRoute
 import androidx.compose.material.icons.outlined.Dns
 import androidx.compose.material.icons.outlined.Http
 import androidx.compose.material.icons.outlined.Lan
@@ -68,7 +68,7 @@ object Tools {
             route = Routes.TRACE,
             title = "Traceroute",
             subtitle = "Hop-by-hop network path",
-            icon = Icons.Outlined.AltRoute,
+            icon = Icons.AutoMirrored.Outlined.AltRoute,
             accent = AccentViolet
         ),
         ToolInfo(
